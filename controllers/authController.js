@@ -46,6 +46,7 @@ export const registerUser = async (req, res) => {
       email,
       password,
       role,
+      isApproved: userCount === 0, // Auto-approve the first user (Admin)
     });
 
     if (user) {
@@ -75,6 +76,11 @@ export const loginUser = async (req, res) => {
     const user = await User.findOne({ email }).select('+password');
 
     if (user && (await user.matchPassword(password))) {
+      // Check if user is approved
+      if (!user.isApproved) {
+        return res.status(403).json({ message: 'Your account is pending approval. Please contact your Admin or Teacher.' });
+      }
+
       res.json({
         _id: user._id,
         name: user.name,

@@ -25,7 +25,11 @@ const userSchema = new mongoose.Schema(
     role: {
       type: String,
       enum: ['Admin', 'Teacher', 'Student', 'Parent'],
-      default: 'student',
+      default: 'Student',
+    },
+    isApproved: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true }
