@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import morgan from 'morgan';
 import connectDB from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
 import attendanceRoutes from './routes/attendanceRoutes.js';
@@ -19,6 +20,10 @@ const app = express();
 app.use(cors({ origin: '*', methods: '*', allowedHeaders: '*' }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
+}
 
 // Mount routers
 app.use('/api/auth', authRoutes);

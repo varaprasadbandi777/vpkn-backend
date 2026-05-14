@@ -28,7 +28,7 @@ export const registerUser = async (req, res) => {
     // EXTRA SECURITY: If trying to register as Admin, require a secret key
     if (role === 'Admin') {
       const adminSecret = req.body.adminSecret;
-      if (adminSecret !== 'SCET@2024') {
+      if (adminSecret !== process.env.ADMIN_SIGNUP_SECRET) {
         return res.status(401).json({ message: 'Invalid Admin Registration Secret' });
       }
     }
