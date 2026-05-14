@@ -15,6 +15,24 @@ export const registerUser = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
 
+    // Check if any users exist in the DB
+    const userCount = await User.countDocuments({});
+
+    // If users already exist, check if the requester is an Admin
+    if (userCount > 0) {
+      if (!req.user || req.user.role !== 'Admin') {
+        return res.status(403).json({ message: 'Only admins can register new users' });
+      }
+    }
+
+    // EXTRA SECURITY: If trying to register as Admin, require a secret key
+    if (role === 'Admin') {
+      const adminSecret = req.body.adminSecret;
+      if (adminSecret !== 'SCET@2024') {
+        return res.status(401).json({ message: 'Invalid Admin Registration Secret' });
+      }
+    }
+
     // Check if user exists
     const userExists = await User.findOne({ email });
 
